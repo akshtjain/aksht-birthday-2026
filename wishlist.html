@@ -254,140 +254,104 @@
         </footer>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-    
     <script>
-        // Firebase config - REPLACE WITH YOUR CONFIG
-        const firebaseConfig = {
-            apiKey: "FIREBASE_API_KEY",
-            authDomain: "FIREBASE_PROJECT.firebaseapp.com",
-            databaseURL: "https://FIREBASE_PROJECT-default-rtdb.firebaseio.com",
-            projectId: "FIREBASE_PROJECT",
-            storageBucket: "FIREBASE_PROJECT.appspot.com",
-            messagingSenderId: "000000000000",
-            appId: "FIREBASE_APP_ID"
-        };
-
         // Wishlist items
         const WISHLIST_ITEMS = [
             {
                 id: 'coffee-mug',
-                name: 'NYRWANA Coffee Mug',
+                name: 'NYRWANA Planet Coffee Mug',
                 price: '₹349',
-                url: 'AMAZON_LINK_1',
+                url: 'https://www.amazon.in/dp/B09JP9KMKC',
                 category: 'Everyday'
             },
             {
                 id: 'parker-pen',
-                name: 'Parker Vector Special Edition Pen Set',
+                name: 'Parker Vector Roller Ball Pen Set',
                 price: '₹545',
-                url: 'AMAZON_LINK_2',
+                url: 'https://www.amazon.in/dp/B01LXUUPTU',
                 category: 'Everyday'
             },
             {
                 id: 'cable-organizer',
-                name: 'Elfora Compact Cable Organizer Bag',
-                price: '₹399',
-                url: 'AMAZON_LINK_3',
+                name: 'Elfora Cable Organizer Bag',
+                price: '₹499',
+                url: 'https://www.amazon.in/dp/B0F18WNN3J',
                 category: 'Tech'
             },
             {
                 id: 'ambrane-powerbank',
                 name: 'Ambrane 10000mAh Slim Powerbank',
                 price: '₹699',
-                url: 'AMAZON_LINK_4',
+                url: 'https://www.amazon.in/dp/B0DWSS3Q5K',
                 category: 'Tech'
             },
             {
                 id: 'urbn-powerbank',
                 name: 'URBN 10000mAh MagSafe Wireless Power Bank',
                 price: '₹1,499',
-                url: 'AMAZON_LINK_5',
+                url: 'https://www.amazon.in/dp/B0FB99VQCT',
                 category: 'Tech'
             },
             {
                 id: 'multi-tool-knife',
-                name: 'Amazon Basics 15-in-1 Multi-Tool Pocket Knife',
-                price: '₹399',
-                url: 'AMAZON_LINK_6',
+                name: 'Amazon Basics 15-in-1 Multi-Tool Knife',
+                price: '₹599',
+                url: 'https://www.amazon.in/dp/B07TP4WPGD',
                 category: 'Tools'
             },
             {
                 id: 'plier-tool',
-                name: 'SKYTONE 24-in-1 Multi-function Plier Tool',
-                price: '₹299',
-                url: 'AMAZON_LINK_7',
+                name: 'SKYTONE 24-in-1 Multi-function Plier',
+                price: '₹349',
+                url: 'https://www.amazon.in/dp/B0BRY2QD6H',
                 category: 'Tools'
             },
             {
                 id: 'tech-kit-organiser',
-                name: 'DailyObjects Vault Tech Kit Organiser',
+                name: 'DailyObjects Tech Kit Organiser',
                 price: '₹1,999',
-                url: 'AMAZON_LINK_8',
+                url: 'https://www.amazon.in/dp/B0CRF4FHWX',
                 category: 'Tech'
             },
             {
                 id: 'hard-thing-book',
-                name: 'The Hard Thing About Hard Things — Ben Horowitz',
-                price: '₹399',
-                url: 'AMAZON_LINK_9',
+                name: 'The Hard Thing About Hard Things',
+                price: '₹499',
+                url: 'https://www.amazon.in/dp/0016755421',
                 category: 'Books'
             },
             {
                 id: 'hotwheels-reveal',
                 name: 'Hot Wheels Color Reveal (Set of 2)',
-                price: '₹799',
-                url: 'AMAZON_LINK_10',
+                price: '₹999',
+                url: 'https://www.amazon.in/dp/B08QXTY7GM',
                 category: 'Fun'
             },
             {
                 id: 'hotwheels-muscle',
-                name: 'Hot Wheels 1:64 Mod Mill Muscle Mania',
-                price: '₹199',
-                url: 'AMAZON_LINK_11',
+                name: 'Hot Wheels Muscle Mania',
+                price: '₹249',
+                url: 'https://www.amazon.in/dp/B0GD84GNNJ',
                 category: 'Fun'
             },
             {
                 id: 'rc-car',
                 name: 'Popsugar Off Roader RC Car',
-                price: '₹1,299',
-                url: 'AMAZON_LINK_12',
+                price: '₹1,499',
+                url: 'https://www.amazon.in/dp/B0CQK691XQ',
                 category: 'Fun'
             }
         ];
 
-        let db;
-        let claimsRef;
         let claims = {};
+        let localClaims = {};
         let guestName = localStorage.getItem('guestName') || '';
+        
+        // Claims stored in repo - polls for updates
+        const CLAIMS_URL = 'https://raw.githubusercontent.com/akshtjain/aksht-birthday-2026/main/claims.json';
 
         // Initialize
-        function init() {
-            // Try to init Firebase
-            try {
-                if (firebaseConfig.apiKey !== 'FIREBASE_API_KEY') {
-                    firebase.initializeApp(firebaseConfig);
-                    db = firebase.database();
-                    claimsRef = db.ref('claims');
-                    
-                    // Listen for real-time updates
-                    claimsRef.on('value', (snapshot) => {
-                        claims = snapshot.val() || {};
-                        renderWishlist();
-                    });
-                } else {
-                    // No Firebase - use localStorage fallback
-                    claims = JSON.parse(localStorage.getItem('wishlist-claims') || '{}');
-                    renderWishlist();
-                }
-            } catch (e) {
-                console.log('Firebase not configured, using localStorage');
-                claims = JSON.parse(localStorage.getItem('wishlist-claims') || '{}');
-                renderWishlist();
-            }
-
+        async function init() {
             // Setup guest name
             const guestInput = document.getElementById('guest-name');
             if (guestName) {
@@ -397,8 +361,44 @@
                 guestName = e.target.value.trim();
                 localStorage.setItem('guestName', guestName);
             });
-
             document.getElementById('guest-section').classList.add('show');
+            
+            // Load local claims (pending confirmation)
+            localClaims = JSON.parse(localStorage.getItem('my-claims') || '{}');
+
+            // Load confirmed claims from repo
+            await loadClaims();
+        }
+        
+        async function loadClaims() {
+            try {
+                const res = await fetch(CLAIMS_URL + '?t=' + Date.now());
+                if (res.ok) {
+                    claims = await res.json();
+                }
+            } catch (e) {
+                console.log('Could not load claims');
+            }
+            renderWishlist();
+            
+            // Poll for updates every 30 seconds
+            setInterval(async () => {
+                try {
+                    const res = await fetch(CLAIMS_URL + '?t=' + Date.now());
+                    if (res.ok) {
+                        const newClaims = await res.json();
+                        if (JSON.stringify(newClaims) !== JSON.stringify(claims)) {
+                            claims = newClaims;
+                            // Clear local claims that are now confirmed
+                            Object.keys(claims).forEach(id => {
+                                delete localClaims[id];
+                            });
+                            localStorage.setItem('my-claims', JSON.stringify(localClaims));
+                            renderWishlist();
+                        }
+                    }
+                } catch (e) {}
+            }, 30000);
         }
 
         function renderWishlist() {
@@ -424,9 +424,25 @@
                 if (categories[cat]) {
                     html += `<li class="category">${cat}</li>`;
                     categories[cat].forEach(item => {
-                        const claim = claims[item.id];
+                        const confirmedClaim = claims[item.id];
+                        const pendingClaim = localClaims[item.id];
+                        const claim = confirmedClaim || pendingClaim;
                         const isClaimed = !!claim;
+                        const isPending = !confirmedClaim && !!pendingClaim;
                         const isMyItem = claim && claim.name === guestName;
+                        
+                        let statusHtml;
+                        if (confirmedClaim) {
+                            statusHtml = `<div class="claimed">
+                                <span class="claimed-by">${isMyItem ? "You're getting this ✓" : `Taken by ${claim.name}`}</span>
+                            </div>`;
+                        } else if (pendingClaim && isMyItem) {
+                            statusHtml = `<div class="claimed">
+                                <span class="claimed-by" style="color: #666;">Confirming... ⏳</span>
+                            </div>`;
+                        } else {
+                            statusHtml = `<button class="claim-btn" onclick="claimItem('${item.id}')">I'll get this</button>`;
+                        }
                         
                         html += `
                             <li class="wishlist-item" data-id="${item.id}">
@@ -437,12 +453,7 @@
                                     <div class="item-price">${item.price}</div>
                                 </div>
                                 <div class="item-status">
-                                    ${isClaimed 
-                                        ? `<div class="claimed">
-                                            <span class="claimed-by">${isMyItem ? "You're getting this" : `Claimed by ${claim.name}`}</span>
-                                           </div>`
-                                        : `<button class="claim-btn" onclick="claimItem('${item.id}')">I'll get this</button>`
-                                    }
+                                    ${statusHtml}
                                 </div>
                             </li>
                         `;
@@ -457,6 +468,13 @@
             if (!guestName) {
                 document.getElementById('guest-name').focus();
                 document.getElementById('guest-name').style.borderColor = '#fff';
+                alert('Please enter your name first');
+                return;
+            }
+            
+            // Check if already claimed
+            if (claims[itemId]) {
+                alert('This gift has already been claimed!');
                 return;
             }
 
@@ -465,30 +483,25 @@
                 timestamp: Date.now()
             };
 
-            try {
-                if (claimsRef) {
-                    // Firebase
-                    await claimsRef.child(itemId).set(claim);
-                } else {
-                    // localStorage fallback
-                    claims[itemId] = claim;
-                    localStorage.setItem('wishlist-claims', JSON.stringify(claims));
-                    renderWishlist();
-                }
+            // Save locally (pending confirmation)
+            localClaims[itemId] = claim;
+            localStorage.setItem('my-claims', JSON.stringify(localClaims));
+            renderWishlist();
 
-                // Notify via ntfy
-                const item = WISHLIST_ITEMS.find(i => i.id === itemId);
-                fetch('https://ntfy.sh/aksht-birthday-2026-rsvp', {
+            // Notify Aksht via ntfy - he'll confirm by updating claims.json
+            const item = WISHLIST_ITEMS.find(i => i.id === itemId);
+            try {
+                await fetch('https://ntfy.sh/aksht-birthday-2026-rsvp', {
                     method: 'POST',
-                    body: `🎁 Gift claimed!\n\n${guestName} will get: ${item.name}`,
+                    body: `🎁 Gift claimed!\n\n${guestName} is getting:\n${item.name} (${item.price})\n\nUpdate claims.json to confirm.`,
                     headers: {
                         'Title': 'Gift Claimed',
-                        'Tags': 'gift'
+                        'Tags': 'gift',
+                        'Priority': '4'
                     }
-                }).catch(() => {});
-
+                });
             } catch (e) {
-                console.error('Error claiming item:', e);
+                console.log('Notification failed, but claim saved locally');
             }
         }
 
