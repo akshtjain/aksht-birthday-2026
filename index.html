@@ -269,7 +269,7 @@
         </section>
 
         <footer class="footer">
-            Looking forward to seeing you there
+            <a href="wishlist.html" style="color: #666; text-decoration: none; border-bottom: 1px solid #333; transition: all 0.2s;">View the wishlist</a>
         </footer>
     </div>
 
@@ -282,6 +282,9 @@
             btn.disabled = true;
             
             const formData = new FormData(this);
+            
+            // Save name for wishlist
+            localStorage.setItem('guestName', formData.get('name'));
             
             try {
                 // Using ntfy.sh for instant notifications
