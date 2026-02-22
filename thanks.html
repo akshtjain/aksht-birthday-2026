@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎉 See you there!</title>
+    <title>See you there</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,145 +16,111 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: #0a0a0a;
             min-height: 100vh;
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            top: -10px;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(720deg);
-            }
         }
 
         .container {
             text-align: center;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
+            padding: 40px 24px;
+            max-width: 400px;
         }
 
-        .emoji-header {
-            font-size: 5rem;
-            margin-bottom: 30px;
-            animation: bounce 2s ease-in-out infinite;
+        .checkmark {
+            width: 64px;
+            height: 64px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            animation: scale-in 0.3s ease-out;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.1); }
+        @keyframes scale-in {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .checkmark svg {
+            width: 28px;
+            height: 28px;
         }
 
         h1 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Cormorant Garamond', serif;
             font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, #f6d365, #fda085, #f6d365);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 3s linear infinite;
-        }
-
-        @keyframes shine {
-            to { background-position: 200% center; }
+            font-weight: 400;
+            margin-bottom: 16px;
         }
 
         .message {
-            font-size: 1.3rem;
-            color: #a0aec0;
+            color: #666;
             margin-bottom: 40px;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            color: #1a1a2e;
-            text-decoration: none;
-            padding: 16px 32px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(253, 160, 133, 0.4);
+        .reminder {
+            background: #111;
+            padding: 24px;
+            border-radius: 4px;
+            margin-bottom: 32px;
         }
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(253, 160, 133, 0.5);
-        }
-
-        .date-reminder {
-            margin-top: 40px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            display: inline-block;
-        }
-
-        .date-reminder .label {
-            font-size: 0.85rem;
-            color: #718096;
-            text-transform: uppercase;
+        .reminder-label {
+            font-size: 0.75rem;
             letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #555;
             margin-bottom: 8px;
         }
 
-        .date-reminder .date {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #fda085;
+        .reminder-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border: 1px solid #333;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #fff;
+            color: #0a0a0a;
+            border-color: #fff;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="emoji-header">🎊</div>
-        <h1>You're on the list!</h1>
-        <p class="message">
-            Thanks for RSVPing!<br>
-            Can't wait to party with you 🥳
-        </p>
-
-        <a href="https://maps.app.goo.gl/X24yjwkWTCBTToRo8" target="_blank" class="btn">
-            <span>📍</span> Save the Location
-        </a>
-
-        <div class="date-reminder">
-            <div class="label">Mark your calendar</div>
-            <div class="date">📅 Feb 25th, 9 PM</div>
+        <div class="checkmark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
         </div>
-    </div>
-
-    <script>
-        const colors = ['#f6d365', '#fda085', '#a855f7', '#3b82f6', '#10b981', '#ef4444'];
         
-        for (let i = 0; i < 80; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = Math.random() * 100 + 'vw';
-            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-            confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            confetti.style.animationDelay = Math.random() * 2 + 's';
-            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-            document.body.appendChild(confetti);
-        }
-    </script>
+        <h1>You're in</h1>
+        <p class="message">Looking forward to seeing you.<br>Don't be late.</p>
+        
+        <div class="reminder">
+            <div class="reminder-label">Save the date</div>
+            <div class="reminder-value">Feb 25 · 9 PM</div>
+        </div>
+        
+        <a href="https://maps.app.goo.gl/X24yjwkWTCBTToRo8" target="_blank" class="btn">Get Directions</a>
+    </div>
 </body>
 </html>
