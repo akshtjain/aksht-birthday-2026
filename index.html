@@ -197,6 +197,30 @@
             font-size: 0.85rem;
         }
 
+        .squad-photo {
+            margin-bottom: 50px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .squad-photo img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .squad-caption {
+            font-size: 0.85rem;
+            color: #555;
+            font-style: italic;
+        }
+
         @media (max-width: 480px) {
             h1 { font-size: 2.5rem; }
             .form-row { grid-template-columns: 1fr; gap: 0; }
@@ -212,6 +236,12 @@
             <h1>Aksht turns a year older</h1>
             <p class="tagline">Join us for drinks and good company</p>
         </header>
+
+        <!-- Easter egg for the squad -->
+        <div id="squad-photo" class="squad-photo" style="display: none;">
+            <img src="squad.jpg" alt="The squad">
+            <p class="squad-caption">The OGs</p>
+        </div>
 
         <section class="details">
             <div class="detail-row">
@@ -274,6 +304,17 @@
     </div>
 
     <script>
+        // Easter egg: show squad photo for Amogh or Kshitij
+        const nameInput = document.getElementById('name');
+        const squadPhoto = document.getElementById('squad-photo');
+        const squadNames = ['amogh', 'kshitij'];
+        
+        nameInput.addEventListener('input', function() {
+            const name = this.value.toLowerCase().trim();
+            const isSquad = squadNames.some(n => name.includes(n));
+            squadPhoto.style.display = isSquad ? 'block' : 'none';
+        });
+
         document.getElementById('rsvp-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
