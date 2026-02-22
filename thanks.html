@@ -166,13 +166,29 @@
             </div>
             <p class="easter-egg-caption">Sleeping beauty 😴</p>
         </div>
+
+        <!-- Easter egg for Amrit/Amritesh/Nameet/Vaibhav -->
+        <div id="amrit-easter-egg" class="easter-egg">
+            <video controls autoplay muted playsinline style="width: 100%; max-width: 350px; border-radius: 8px;">
+                <source src="amrit-video.mp4" type="video/mp4">
+            </video>
+            <p class="easter-egg-caption">Legends only 🔥</p>
+        </div>
     </div>
 
     <script>
-        // Check if it's Mehul
         const guestName = localStorage.getItem('guestName') || '';
-        if (guestName.toLowerCase().includes('mehul')) {
+        const nameLower = guestName.toLowerCase();
+        
+        // Check if it's Mehul
+        if (nameLower.includes('mehul')) {
             document.getElementById('mehul-easter-egg').style.display = 'block';
+        }
+        
+        // Check if it's Amrit/Amritesh/Nameet/Vaibhav
+        const amritNames = ['amrit', 'amritesh', 'nameet', 'vaibhav'];
+        if (amritNames.some(n => nameLower.includes(n))) {
+            document.getElementById('amrit-easter-egg').style.display = 'block';
         }
     </script>
 </body>
