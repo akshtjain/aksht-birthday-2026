@@ -198,6 +198,12 @@
             <img src="akash.jpg" alt="" style="width: 100%; max-width: 400px; border-radius: 8px;">
             <p class="easter-egg-caption">Festival gang 🎉</p>
         </div>
+
+        <!-- Easter egg for Kartikay/Ayushi -->
+        <div id="kartikay-easter-egg" class="easter-egg">
+            <img src="kartikay.jpg" alt="" style="width: 100%; max-width: 400px; border-radius: 8px;">
+            <p class="easter-egg-caption">Trekking squad 🥾</p>
+        </div>
     </div>
 
     <script>
@@ -237,6 +243,12 @@
         const akashNames = ['akash', 'rishika', 'rishika patel', 'akash tiwari'];
         if (akashNames.some(n => nameLower.includes(n))) {
             document.getElementById('akash-easter-egg').style.display = 'block';
+        }
+        
+        // Check if it's Kartikay/Ayushi
+        const kartikayNames = ['kartikay', 'kartikay bagla', 'ayushi', 'ayushi bansal'];
+        if (kartikayNames.some(n => nameLower.includes(n))) {
+            document.getElementById('kartikay-easter-egg').style.display = 'block';
         }
     </script>
 </body>
