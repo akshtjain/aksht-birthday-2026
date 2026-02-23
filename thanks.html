@@ -186,6 +186,12 @@
             <img src="aiman.jpg" alt="" style="width: 100%; max-width: 350px; border-radius: 8px;">
             <p class="easter-egg-caption">The OGs ✨</p>
         </div>
+
+        <!-- Easter egg for Apoorva -->
+        <div id="apoorva-easter-egg" class="easter-egg">
+            <img src="apoorva.jpg" alt="" style="width: 100%; max-width: 350px; border-radius: 8px;">
+            <p class="easter-egg-caption">The day ones 💛</p>
+        </div>
     </div>
 
     <script>
@@ -213,6 +219,12 @@
         const aimanNames = ['aiman', 'aimz', 'ames', 'aiman siddiqua'];
         if (aimanNames.some(n => nameLower.includes(n))) {
             document.getElementById('aiman-easter-egg').style.display = 'block';
+        }
+        
+        // Check if it's Apoorva
+        const apoorvaNames = ['apoorva', 'apoo', 'apooboo'];
+        if (apoorvaNames.some(n => nameLower.includes(n))) {
+            document.getElementById('apoorva-easter-egg').style.display = 'block';
         }
     </script>
 </body>
