@@ -140,6 +140,20 @@
             color: #fff;
         }
 
+        .form-group select[multiple] {
+            height: auto;
+            min-height: 120px;
+        }
+
+        .form-group select[multiple] option {
+            padding: 8px 16px;
+        }
+
+        .form-group select[multiple] option:checked {
+            background: #333;
+            color: #fff;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -256,7 +270,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="drink">Drink of Choice</label>
-                        <select id="drink" name="drink">
+                        <select id="drink" name="drink" multiple>
                             <option value="">Select...</option>
                             <option value="Whiskey">Whiskey</option>
                             <option value="Beer">Beer</option>
@@ -268,6 +282,7 @@
                             <option value="Non-alcoholic">Non-alcoholic</option>
                             <option value="Surprise me">Surprise me</option>
                         </select>
+                        <small style="color: #444; font-size: 0.75rem; display: block; margin-top: 8px;">Hold Ctrl/Cmd to select multiple</small>
                     </div>
                     <div class="form-group">
                         <label for="bringing">Bringing</label>
@@ -306,12 +321,17 @@
             
             const formData = new FormData(this);
             
+            // Get selected drinks (multiple)
+            const drinkSelect = document.getElementById('drink');
+            const selectedDrinks = Array.from(drinkSelect.selectedOptions).map(opt => opt.value).filter(v => v);
+            const drinksText = selectedDrinks.length > 0 ? selectedDrinks.join(', ') : 'Not specified';
+            
             // Save name for wishlist
             localStorage.setItem('guestName', formData.get('name'));
             
             try {
                 // Using ntfy.sh for instant notifications
-                const message = `🎉 New RSVP!\n\nName: ${formData.get('name')}\nDrink: ${formData.get('drink') || 'Not specified'}\nBringing: ${formData.get('bringing') || 'Nothing specified'}`;
+                const message = `🎉 New RSVP!\n\nName: ${formData.get('name')}\nDrink: ${drinksText}\nBringing: ${formData.get('bringing') || 'Nothing specified'}`;
                 
                 await fetch('https://ntfy.sh/aksht-birthday-2026-rsvp', {
                     method: 'POST',
