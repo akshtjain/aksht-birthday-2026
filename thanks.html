@@ -192,6 +192,12 @@
             <img src="apoorva.jpg" alt="" style="width: 100%; max-width: 350px; border-radius: 8px;">
             <p class="easter-egg-caption">The day ones 💛</p>
         </div>
+
+        <!-- Easter egg for Akash/Rishika -->
+        <div id="akash-easter-egg" class="easter-egg">
+            <img src="akash.jpg" alt="" style="width: 100%; max-width: 400px; border-radius: 8px;">
+            <p class="easter-egg-caption">Festival gang 🎉</p>
+        </div>
     </div>
 
     <script>
@@ -225,6 +231,12 @@
         const apoorvaNames = ['apoorva', 'apoo', 'apooboo'];
         if (apoorvaNames.some(n => nameLower.includes(n))) {
             document.getElementById('apoorva-easter-egg').style.display = 'block';
+        }
+        
+        // Check if it's Akash/Rishika
+        const akashNames = ['akash', 'rishika', 'rishika patel', 'akash tiwari'];
+        if (akashNames.some(n => nameLower.includes(n))) {
+            document.getElementById('akash-easter-egg').style.display = 'block';
         }
     </script>
 </body>
