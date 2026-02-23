@@ -174,6 +174,12 @@
             </video>
             <p class="easter-egg-caption">Legends only 🔥</p>
         </div>
+
+        <!-- Easter egg for Piyush/Akshat -->
+        <div id="piyush-easter-egg" class="easter-egg">
+            <img src="piyush.jpg" alt="" style="width: 100%; max-width: 300px; border-radius: 8px;">
+            <p class="easter-egg-caption">Cake face supremacy 🎂</p>
+        </div>
     </div>
 
     <script>
@@ -189,6 +195,12 @@
         const amritNames = ['amrit', 'amritesh', 'nameet', 'vaibhav'];
         if (amritNames.some(n => nameLower.includes(n))) {
             document.getElementById('amrit-easter-egg').style.display = 'block';
+        }
+        
+        // Check if it's Piyush/Akshat
+        const piyushNames = ['piyush', 'akshat'];
+        if (piyushNames.some(n => nameLower.includes(n))) {
+            document.getElementById('piyush-easter-egg').style.display = 'block';
         }
     </script>
 </body>
