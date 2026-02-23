@@ -180,6 +180,12 @@
             <img src="piyush.jpg" alt="" style="width: 100%; max-width: 300px; border-radius: 8px;">
             <p class="easter-egg-caption">Cake face supremacy 🎂</p>
         </div>
+
+        <!-- Easter egg for Aiman -->
+        <div id="aiman-easter-egg" class="easter-egg">
+            <img src="aiman.jpg" alt="" style="width: 100%; max-width: 350px; border-radius: 8px;">
+            <p class="easter-egg-caption">The OGs ✨</p>
+        </div>
     </div>
 
     <script>
@@ -201,6 +207,12 @@
         const piyushNames = ['piyush', 'akshat'];
         if (piyushNames.some(n => nameLower.includes(n))) {
             document.getElementById('piyush-easter-egg').style.display = 'block';
+        }
+        
+        // Check if it's Aiman
+        const aimanNames = ['aiman', 'aimz', 'ames', 'aiman siddiqua'];
+        if (aimanNames.some(n => nameLower.includes(n))) {
+            document.getElementById('aiman-easter-egg').style.display = 'block';
         }
     </script>
 </body>
