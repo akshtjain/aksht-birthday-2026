@@ -64,11 +64,6 @@
             padding: 24px;
             border-radius: 4px;
             margin-bottom: 40px;
-            display: none;
-        }
-
-        .guest-name-section.show {
-            display: block;
         }
 
         .guest-name-section label {
@@ -254,7 +249,25 @@
         </footer>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
     <script>
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDsjfXSUgU5GW-kOB3ShponSTvC3hcbjdk",
+            authDomain: "birthday-invite-2026.firebaseapp.com",
+            projectId: "birthday-invite-2026",
+            storageBucket: "birthday-invite-2026.firebasestorage.app",
+            messagingSenderId: "829367050468",
+            appId: "1:829367050468:web:378e3cbc19c48ee0bfccf1"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         // Wishlist items
         const WISHLIST_ITEMS = [
             {
@@ -344,14 +357,10 @@
         ];
 
         let claims = {};
-        let localClaims = {};
         let guestName = localStorage.getItem('guestName') || '';
-        
-        // Claims stored in repo - polls for updates
-        const CLAIMS_URL = 'https://raw.githubusercontent.com/akshtjain/aksht-birthday-2026/main/claims.json';
 
         // Initialize
-        async function init() {
+        function init() {
             // Setup guest name
             const guestInput = document.getElementById('guest-name');
             if (guestName) {
@@ -361,44 +370,20 @@
                 guestName = e.target.value.trim();
                 localStorage.setItem('guestName', guestName);
             });
-            document.getElementById('guest-section').classList.add('show');
-            
-            // Load local claims (pending confirmation)
-            localClaims = JSON.parse(localStorage.getItem('my-claims') || '{}');
 
-            // Load confirmed claims from repo
-            await loadClaims();
-        }
-        
-        async function loadClaims() {
-            try {
-                const res = await fetch(CLAIMS_URL + '?t=' + Date.now());
-                if (res.ok) {
-                    claims = await res.json();
-                }
-            } catch (e) {
-                console.log('Could not load claims');
-            }
-            renderWishlist();
-            
-            // Poll for updates every 30 seconds
-            setInterval(async () => {
-                try {
-                    const res = await fetch(CLAIMS_URL + '?t=' + Date.now());
-                    if (res.ok) {
-                        const newClaims = await res.json();
-                        if (JSON.stringify(newClaims) !== JSON.stringify(claims)) {
-                            claims = newClaims;
-                            // Clear local claims that are now confirmed
-                            Object.keys(claims).forEach(id => {
-                                delete localClaims[id];
-                            });
-                            localStorage.setItem('my-claims', JSON.stringify(localClaims));
-                            renderWishlist();
-                        }
-                    }
-                } catch (e) {}
-            }, 30000);
+            // Listen for real-time updates from Firestore
+            db.collection('claims').onSnapshot((snapshot) => {
+                claims = {};
+                snapshot.forEach((doc) => {
+                    claims[doc.id] = doc.data();
+                });
+                renderWishlist();
+            }, (error) => {
+                console.error('Firestore error:', error);
+                // Fallback to localStorage
+                claims = JSON.parse(localStorage.getItem('wishlist-claims') || '{}');
+                renderWishlist();
+            });
         }
 
         function renderWishlist() {
@@ -424,21 +409,14 @@
                 if (categories[cat]) {
                     html += `<li class="category">${cat}</li>`;
                     categories[cat].forEach(item => {
-                        const confirmedClaim = claims[item.id];
-                        const pendingClaim = localClaims[item.id];
-                        const claim = confirmedClaim || pendingClaim;
+                        const claim = claims[item.id];
                         const isClaimed = !!claim;
-                        const isPending = !confirmedClaim && !!pendingClaim;
-                        const isMyItem = claim && claim.name === guestName;
+                        const isMyItem = claim && claim.name.toLowerCase() === guestName.toLowerCase();
                         
                         let statusHtml;
-                        if (confirmedClaim) {
+                        if (isClaimed) {
                             statusHtml = `<div class="claimed">
                                 <span class="claimed-by">${isMyItem ? "You're getting this ✓" : `Taken by ${claim.name}`}</span>
-                            </div>`;
-                        } else if (pendingClaim && isMyItem) {
-                            statusHtml = `<div class="claimed">
-                                <span class="claimed-by" style="color: #666;">Confirming... ⏳</span>
                             </div>`;
                         } else {
                             statusHtml = `<button class="claim-btn" onclick="claimItem('${item.id}')">I'll get this</button>`;
@@ -467,7 +445,6 @@
         async function claimItem(itemId) {
             if (!guestName) {
                 document.getElementById('guest-name').focus();
-                document.getElementById('guest-name').style.borderColor = '#fff';
                 alert('Please enter your name first');
                 return;
             }
@@ -478,30 +455,29 @@
                 return;
             }
 
-            const claim = {
-                name: guestName,
-                timestamp: Date.now()
-            };
-
-            // Save locally (pending confirmation)
-            localClaims[itemId] = claim;
-            localStorage.setItem('my-claims', JSON.stringify(localClaims));
-            renderWishlist();
-
-            // Notify Aksht via ntfy - he'll confirm by updating claims.json
             const item = WISHLIST_ITEMS.find(i => i.id === itemId);
+
             try {
-                await fetch('https://ntfy.sh/aksht-birthday-2026-rsvp', {
+                // Save to Firestore
+                await db.collection('claims').doc(itemId).set({
+                    name: guestName,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Notify via ntfy
+                fetch('https://ntfy.sh/aksht-birthday-2026-rsvp', {
                     method: 'POST',
-                    body: `🎁 Gift claimed!\n\n${guestName} is getting:\n${item.name} (${item.price})\n\nUpdate claims.json to confirm.`,
+                    body: `🎁 Gift claimed!\n\n${guestName} is getting:\n${item.name} (${item.price})`,
                     headers: {
                         'Title': 'Gift Claimed',
                         'Tags': 'gift',
                         'Priority': '4'
                     }
-                });
+                }).catch(() => {});
+
             } catch (e) {
-                console.log('Notification failed, but claim saved locally');
+                console.error('Error claiming item:', e);
+                alert('Failed to claim. Please try again.');
             }
         }
 
