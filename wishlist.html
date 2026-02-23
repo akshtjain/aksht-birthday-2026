@@ -171,6 +171,26 @@
 
         .claimed-by {
             color: #888;
+            display: block;
+        }
+
+        .remove-btn {
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #333;
+            color: #666;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            border-color: #ff4444;
+            color: #ff4444;
         }
 
         .loading {
@@ -414,9 +434,14 @@
                         const isMyItem = claim && claim.name.toLowerCase() === guestName.toLowerCase();
                         
                         let statusHtml;
-                        if (isClaimed) {
+                        if (isClaimed && isMyItem) {
                             statusHtml = `<div class="claimed">
-                                <span class="claimed-by">${isMyItem ? "You're getting this ✓" : `Taken by ${claim.name}`}</span>
+                                <span class="claimed-by">You're getting this ✓</span>
+                                <button class="remove-btn" onclick="unclaimItem('${item.id}')">Remove</button>
+                            </div>`;
+                        } else if (isClaimed) {
+                            statusHtml = `<div class="claimed">
+                                <span class="claimed-by">Taken</span>
                             </div>`;
                         } else {
                             statusHtml = `<button class="claim-btn" onclick="claimItem('${item.id}')">I'll get this</button>`;
@@ -478,6 +503,15 @@
             } catch (e) {
                 console.error('Error claiming item:', e);
                 alert('Failed to claim. Please try again.');
+            }
+        }
+
+        async function unclaimItem(itemId) {
+            try {
+                await db.collection('claims').doc(itemId).delete();
+            } catch (e) {
+                console.error('Error removing claim:', e);
+                alert('Failed to remove. Please try again.');
             }
         }
 
