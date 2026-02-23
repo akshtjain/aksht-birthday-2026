@@ -372,6 +372,11 @@
 
         <ul id="wishlist" class="wishlist" style="display: none;"></ul>
 
+        <div class="custom-gift-section" style="text-align: center; margin-top: 40px; padding: 30px; border: 1px solid #222; border-radius: 8px;">
+            <p style="color: #888; font-size: 0.9rem; margin-bottom: 16px;">Don't see what you want to get?</p>
+            <button onclick="claimCustomGift()" class="custom-gift-btn" style="padding: 14px 28px; background: transparent; border: 1px solid #444; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 50px; transition: all 0.2s;">I'll buy something else</button>
+        </div>
+
         <footer class="footer">
             <p>No pressure — your presence is the real gift</p>
             <a href="#" onclick="openLocationModal(); return false;" style="color: #666; text-decoration: none; border-bottom: 1px solid #333;">📍 T-16 16038, Prestige Shantiniketan, Whitefield → Get directions</a>
@@ -654,6 +659,41 @@
             if (!e || e.target === document.getElementById('location-modal') || e.target.classList.contains('modal-close')) {
                 document.getElementById('location-modal').classList.remove('active');
                 document.body.style.overflow = '';
+            }
+        }
+
+        // Custom gift claim
+        async function claimCustomGift() {
+            if (!guestName) {
+                document.getElementById('guest-name').focus();
+                alert('Please enter your name first');
+                return;
+            }
+
+            try {
+                // Save to Firestore
+                await db.collection('claims').doc('custom-gift-' + Date.now()).set({
+                    name: guestName,
+                    item: 'Something else (custom)',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Notify via ntfy
+                fetch('https://ntfy.sh/aksht-birthday-2026-rsvp', {
+                    method: 'POST',
+                    body: `🎁 Custom gift claimed!\n\n${guestName} will bring something not on the list`,
+                    headers: {
+                        'Title': 'Custom Gift Claimed',
+                        'Tags': 'gift',
+                        'Priority': '4'
+                    }
+                }).catch(() => {});
+
+                alert('Thanks! You\'ll bring something special ✨');
+
+            } catch (e) {
+                console.error('Error claiming custom gift:', e);
+                alert('Failed to save. Please try again.');
             }
         }
     </script>
