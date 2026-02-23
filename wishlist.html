@@ -366,6 +366,10 @@
         <div id="guest-section" class="guest-name-section">
             <label for="guest-name">Your name (to claim gifts)</label>
             <input type="text" id="guest-name" placeholder="Enter your name">
+            <label class="anonymous-option" style="display: flex; align-items: center; gap: 10px; margin-top: 16px; cursor: pointer;">
+                <input type="checkbox" id="anonymous-check" style="width: 18px; height: 18px; accent-color: #fff;">
+                <span style="font-size: 0.9rem; color: #888;">Keep me anonymous</span>
+            </label>
         </div>
 
         <div id="loading" class="loading">Loading wishlist...</div>
@@ -563,7 +567,7 @@
                     categories[cat].forEach(item => {
                         const claim = claims[item.id];
                         const isClaimed = !!claim;
-                        const isMyItem = claim && claim.name.toLowerCase() === guestName.toLowerCase();
+                        const isMyItem = claim && (claim.name.toLowerCase() === guestName.toLowerCase() || claim.name === 'Anonymous');
                         
                         let statusHtml;
                         if (isClaimed && isMyItem) {
@@ -613,18 +617,20 @@
             }
 
             const item = WISHLIST_ITEMS.find(i => i.id === itemId);
+            const isAnonymous = document.getElementById('anonymous-check').checked;
+            const displayName = isAnonymous ? 'Anonymous' : guestName;
 
             try {
                 // Save to Firestore
                 await db.collection('claims').doc(itemId).set({
-                    name: guestName,
+                    name: displayName,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
                 // Notify via ntfy
                 fetch('https://ntfy.sh/aksht-birthday-2026-rsvp', {
                     method: 'POST',
-                    body: `🎁 Gift claimed!\n\n${guestName} is getting:\n${item.name} (${item.price})`,
+                    body: `🎁 Gift claimed!\n\n${displayName} is getting:\n${item.name} (${item.price})`,
                     headers: {
                         'Title': 'Gift Claimed',
                         'Tags': 'gift',
